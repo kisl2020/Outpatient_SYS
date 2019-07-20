@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lh.pj.sys.dao.DispensatoryDao">
+	<!-- <insert id="insertObject"> INSERT into hospital.dispensatory (drug_name,drug_function,drug_price,doctor_name,dispensatory_time,consultation) 
+		values (#{drug_name},#{drug_function},#{drug_price},#{doctor_name},#{dispensatory_time},#{consultation}) 
+		</insert> -->
+
+	<select id="pageCount" resultType="int">
+		select count(*) from dispensatory
+		<include refid="queryWhereId" />
+	</select>
+
+
+	<sql id="colunm">dispensatory_id,drug_name,drug_function,drug_price,doctor_name,
+		dispensatory_time,consultation,case_name,case_gender,drug_quantity,
+		case_age,history,allergy
+	</sql>
+
+
+
+	<select id="findObjects"
+		resultType="com.lh.pj.sys.entity.Dispensatory">
+		select dispensatory_id,case_name,doctor_name from dispensatory
+		<include refid="queryWhereId" />
+	</select>
+
+
+	<select id="findObject"
+		resultType="com.lh.pj.sys.entity.Dispensatory">
+		select
+		<include refid="colunm" />
+		from dispensatory where dispensatory_id=#{dispensatoryId}
+	</select>
+
+	<delete id="deleteObject">
+		delete from dispensatory
+		where dispensatory_id=#{dispensatoryId}
+	</delete>
+
+	<insert id="insertObject">
+		insert into dispensatory
+		(dispensatory_id,drug_name,drug_function,drug_price,doctor_name,
+		dispensatory_time,consultation,case_name,case_gender,drug_quantity,
+		case_age,history,allergy)
+		values
+		(dispensatoryId,drugName,drugFunction,drugPrice,doctorName,
+		dispensatoryTime,consultation,caseName,caseGender,drugQuantity,
+		caseAge,history,allergy)
+	</insert>
+
+	<!-- 动态sql修改语句 -->
+	<update id="updateObject"
+		parameterType="com.lh.pj.sys.entity.Dispensatory">
+		update dispensatory
+		<set>
+			<if test="drugName!=null and drugName!=''">
+				drug_name=#{drugName},
+			</if>
+			<if test="doctorName!=null and doctorName!=''">
+				doctor_name=#{doctorName},
+			</if>
+			drug_function=#{DrugFunction},drug_price=#{drugPrice},drug_quantity=#{drugQuantity},
+			dispensatory_time=#{dispensatoryTime},consultation=#{consultation},case_name=#{caseName},
+			case_gender=#{caseGender},case_age=#{caseAge},history=#{history}
+			allergy=#{allergy}
+		</set>
+		where dispensatory_id=#{dispensatoryId}
+	</update>
+
+	<!-- <delete id="updateObject" > update dispensatory set drug_name=#{drug_name},drug_function=#{drug_function}, 
+		drug_function=#{drug_function},drug_price=#{drug_price},doctor_name=#{doctor_name}, 
+		dispensatory_time=#{dispensatory_time},consultation=#{consultation},case_name=#{case_name}, 
+		case_gender=#{case_gender},case_age=#{case_age},medial_history=#{medial_history}, 
+		allergy=#{allergy} where dispensatory_id=#{dispensatory_id} </delete> -->
+
+
+	<sql id="queryWhereId">
+		<where>
+			<if test="caseName!=null and caseName!=''">
+				case_name like concat("%",#{caseName},"%")
+			</if>
+		</where>
+	</sql>
+
+</mapper>
